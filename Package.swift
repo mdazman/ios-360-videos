@@ -13,8 +13,8 @@ let package = Package(
         .target(
             name: "NYT360Video",
             dependencies: [],
-            path: "Sources/NYT360Video"),
-	    publicHeadersPath: "include"
+            path: "Sources/NYT360Video",
+	    publicHeadersPath: "include"),
         .testTarget(
             name: "NYT360VideoTests",
             dependencies: ["NYT360Video"],
