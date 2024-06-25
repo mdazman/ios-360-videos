@@ -41,7 +41,9 @@ static const NSTimeInterval NYT360MotionManagerPreferredMotionUpdateInterval = (
 @interface NYT360MotionManager ()
 
 @property (nonatomic, readonly) NSMutableDictionary <__kindof NSUUID *, NYT360MotionManagerObserverItem *> *observerItems;
-@property (nonatomic, readonly) CMMotionManager *motionManager;
+#if __has_include(<CoreMotion/CoreMotion.h>)
+    @property (nonatomic, readonly) CMMotionManager *motionManager;
+#endif
 
 @end
 
@@ -62,11 +64,13 @@ static const NSTimeInterval NYT360MotionManagerPreferredMotionUpdateInterval = (
     self = [super init];
     if (self) {
         _observerItems = [NSMutableDictionary new];
+        #if __has_include(<CoreMotion/CoreMotion.h>)
         _motionManager = ({
             CMMotionManager *manager = [CMMotionManager new];
             manager.deviceMotionUpdateInterval = NYT360MotionManagerPreferredMotionUpdateInterval;
             manager;
         });
+        #endif
     }
     return self;
 }
@@ -74,26 +78,30 @@ static const NSTimeInterval NYT360MotionManagerPreferredMotionUpdateInterval = (
 #pragma mark - NYT360MotionManagement
 
 - (BOOL)isDeviceMotionAvailable {
-    return self.motionManager.isDeviceMotionAvailable;
+    return self.motionManager.isDeviceMotionAvailable ?? false;
 }
 
 - (BOOL)isDeviceMotionActive {
-    return self.motionManager.isDeviceMotionActive;
+    return self.motionManager.isDeviceMotionActive ?? false;
 }
 
-- (CMDeviceMotion *)deviceMotion {
-    return self.motionManager.deviceMotion;
-}
+#if __has_include(<CoreMotion/CoreMotion.h>)
+    - (CMDeviceMotion *)deviceMotion {
+        return self.motionManager.deviceMotion;
+    }
+#endif
 
 - (NSUUID *)startUpdating:(NSTimeInterval)preferredUpdateInterval {
     NSAssert([NSOperationQueue currentQueue] == [NSOperationQueue mainQueue], @"NYT360MotionManager may only be used on the main queue.");
     NSUInteger previousCount = self.observerItems.count;
     NYT360MotionManagerObserverItem *item = [[NYT360MotionManagerObserverItem alloc] initWithPreferredUpdateInterval:preferredUpdateInterval];
     self.observerItems[item.token] = item;
-    self.motionManager.deviceMotionUpdateInterval = self.resolvedUpdateInterval;
-    if (self.observerItems.count > 0 && previousCount == 0) {
-        [self.motionManager startDeviceMotionUpdates];
-    }
+    #if __has_include(<CoreMotion/CoreMotion.h>)
+        self.motionManager.deviceMotionUpdateInterval = self.resolvedUpdateInterval;
+        if (self.observerItems.count > 0 && previousCount == 0) {
+            [self.motionManager startDeviceMotionUpdates];
+        }
+    #endif
     return item.token;
 }
 
@@ -102,10 +110,12 @@ static const NSTimeInterval NYT360MotionManagerPreferredMotionUpdateInterval = (
     NSParameterAssert(token);
     NSUInteger previousCount = self.observerItems.count;
     [self.observerItems removeObjectForKey:token];
-    self.motionManager.deviceMotionUpdateInterval = self.resolvedUpdateInterval;
-    if (self.observerItems.count == 0 && previousCount > 0) {
-        [self.motionManager stopDeviceMotionUpdates];
-    }
+    #if __has_include(<CoreMotion/CoreMotion.h>)
+        self.motionManager.deviceMotionUpdateInterval = self.resolvedUpdateInterval;
+        if (self.observerItems.count == 0 && previousCount > 0) {
+            [self.motionManager stopDeviceMotionUpdates];
+        }
+    #endif
 }
 
 #pragma mark - Internal
