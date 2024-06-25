@@ -55,10 +55,7 @@ typedef id<NSObject, NSCopying> NYT360MotionManagementToken;
 /**
  Returns the latest sample of device motion data, or nil if none is available.
  */
-#if __has_include(<CoreMotion/CoreMotion.h>)
-    @property (nonatomic, readonly, nullable) CMDeviceMotion *deviceMotion;
-#endif
-
+@property (nonatomic, readonly, nullable) CMDeviceMotion *deviceMotion;
 
 /**
  Begins updating device motion, if it hasn't begun already.
