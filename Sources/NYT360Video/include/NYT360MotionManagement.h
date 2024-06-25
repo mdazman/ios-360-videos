@@ -7,7 +7,9 @@
 //
 
 @import Foundation;
+#if __has_include(<CoreMotion/CoreMotion.h>)
 @import CoreMotion;
+#endif
 
 NS_ASSUME_NONNULL_BEGIN
 

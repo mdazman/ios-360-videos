@@ -8,7 +8,9 @@
 
 @import UIKit;
 @import SceneKit;
+#if __has_include(<CoreMotion/CoreMotion.h>)
 @import CoreMotion;
+#endif
 
 #import "NYT360DataTypes.h"
 #import "NYT360MotionManagement.h"

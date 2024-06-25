@@ -8,7 +8,9 @@
 
 @import UIKit;
 @import SceneKit;
+#if __has_include(<CoreMotion/CoreMotion.h>)
 @import CoreMotion;
+#endif
 
 extern CGFloat const NYT360EulerAngleCalculationNoiseThresholdDefault;
 extern float const NYT360EulerAngleCalculationDefaultReferenceCompassAngle;
