@@ -105,11 +105,15 @@ static inline CGPoint subtractPoints(CGPoint a, CGPoint b) {
 #endif
 #endif
 
-    CMRotationRate rotationRate = self.motionManager.deviceMotion.rotationRate;
+    #if __has_include(<CoreMotion/CoreMotion.h>)
+        CMRotationRate rotationRate = self.motionManager.deviceMotion.rotationRate;
+    #endif
     UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
 
     NYT360EulerAngleCalculationResult result;
-    result = NYT360DeviceMotionCalculation(self.currentPosition, rotationRate, orientation, self.allowedDeviceMotionPanningAxes, NYT360EulerAngleCalculationNoiseThresholdDefault);
+    #if __has_include(<CoreMotion/CoreMotion.h>)
+        result = NYT360DeviceMotionCalculation(self.currentPosition, rotationRate, orientation, self.allowedDeviceMotionPanningAxes, NYT360EulerAngleCalculationNoiseThresholdDefault);
+    #endif
     self.currentPosition = result.position;
     self.pointOfView.eulerAngles = result.eulerAngles;
 

@@ -63,6 +63,7 @@ NYT360EulerAngleCalculationResult NYT360UpdatedPositionAndAnglesForAllowedAxes(C
     return NYT360EulerAngleCalculationResultMake(position, eulerAngles);
 }
 
+#if __has_include(<CoreMotion/CoreMotion.h>)
 NYT360EulerAngleCalculationResult NYT360DeviceMotionCalculation(CGPoint position, CMRotationRate rotationRate, UIInterfaceOrientation orientation, NYT360PanningAxis allowedPanningAxes, CGFloat noiseThreshold) {
     
     static CGFloat NYT360EulerAngleCalculationRotationRateDampingFactor = 0.02;
@@ -118,6 +119,7 @@ NYT360EulerAngleCalculationResult NYT360DeviceMotionCalculation(CGPoint position
     
     return NYT360EulerAngleCalculationResultMake(position, eulerAngles);
 }
+#endif
 
 NYT360EulerAngleCalculationResult NYT360PanGestureChangeCalculation(CGPoint position, CGPoint rotateDelta, CGSize viewSize, NYT360PanningAxis allowedPanningAxes) {
     
